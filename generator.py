@@ -12,13 +12,13 @@ def print_help(error: str = 'Invalid usage') -> None:
 
         Example Usage: teixcalaan -amount 10 -number 38 -noun poppy
 
-        -amount -> integer: 
+        -amount -> integer: (optional)
                     - the number of random names to return
-        -number -> integer/string (1 to 99): 
+        -number -> integer/string (1 to 99): (optional) 
                     - a specific number to use in the name(s)
                     - acceptable formats: 38, thirty-eight (capitalization doesn't matter, but spelling does)
                     - if passing in a number, such as 38, in words (i.e., thirty-eight), a dash is the only acceptable separator
-        -noun   -> string: 
+        -noun   -> string: (optional)
                     - a specific noun to use in the name(s)
                     - doesn't necessarily need to be a noun, could be any word
                     - will also will accept up to 3 total words (e.g., "poppy", or "north american poppy")
@@ -26,13 +26,16 @@ def print_help(error: str = 'Invalid usage') -> None:
     print(help_text)
 
 def main() -> None:
+    # print(sys.argv)
     amount = 1
     number = 0
     noun = ''
-    print(sys.argv)
     args = sys.argv[1:]
     if len(args) == 0:
         print(generate_name())
+        return
+    if args[0].lower() in ['-help', 'help', '-h', 'h']:
+        print_help('Help')
         return
     if args[0] == '-amount':
         if args[1].isdigit():
@@ -58,6 +61,9 @@ def main() -> None:
         else:
             print_help(f'Invalid number format: "{number}"')
             return
+        if number < 1 or number > 99:
+            print_help(f'Number not within acceptable range: {number}')
+            return
         if len(args) > 2:
             args = args[2:]
     if len(args) > 0 and args[0] == '-noun':
@@ -71,7 +77,7 @@ def main() -> None:
 def get_noun(noun: str = '') -> str:
     if len(noun) > 0:
         return noun
-    with open('nouns.txt', 'r') as f:
+    with open(r'C:\Users\Steve\Projects\teixcalaan\nouns.txt', 'r') as f:
         nouns = [n.strip() for n in f.readlines()]
         return random.choice(nouns)
 
